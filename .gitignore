@@ -1,0 +1,4 @@
+*.class
+*.lst
+pom.properties
+CustomerMng-1.0-SNAPSHOT.war

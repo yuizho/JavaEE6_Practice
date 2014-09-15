@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.mycompany.customermng.entities.Customer;
+import com.mycompany.customermng.entities.maneger.CustomerManeger;
+import com.mycompany.customermng.entities.maneger.CustomerManegerRemote;
+import javax.inject.Inject;
 
 /**
  *
@@ -22,7 +25,7 @@ import com.mycompany.customermng.entities.Customer;
  */
 @WebServlet(name = "TestServlet", urlPatterns = {"/TestServlet"})
 public class TestServlet extends HttpServlet {
-    @EJB CustomerSessionBean ejb;
+    @EJB CustomerManegerRemote ejb;
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -49,16 +52,6 @@ public class TestServlet extends HttpServlet {
                 out.println("id:" + c.getCustomerId() + "<br/>");
                 out.println("Name:" + c.getName() + "<br/>");
             }
-            out.println("<br/>");
-            out.println("名前とIDでとったよ");
-            //out.println(ejb.getCustomersByIdAndName(1, "Jumbo Eagle Corp").get(0));
-            out.println(ejb.getCustomersById(1).get(0));
-            out.println("<br/>");
-            out.println("名前とIDでとったやつを名前かえたよ");
-            Customer c = ejb.getCustomersById(1).get(0);
-            c.setName("いい");
-            ejb.updateCustomers(c);
-            out.println(ejb.getCustomersById(1).get(0));
             out.println("<br/>");
             out.println("</body>");
             out.println("</html>");

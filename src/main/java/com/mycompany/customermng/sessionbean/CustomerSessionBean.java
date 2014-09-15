@@ -6,14 +6,12 @@
 
 package com.mycompany.customermng.sessionbean;
 
-import java.util.List;
 import javax.ejb.Stateless;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import com.mycompany.customermng.entities.Customer;
+import com.mycompany.customermng.entities.maneger.CustomerManegerLocal;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -26,6 +24,8 @@ import javax.ws.rs.Produces;
 @Stateless
 @Path("/customers")
 public class CustomerSessionBean {
+    @Inject CustomerManegerLocal cm;
+    
     @GET
     @Path("/getEntityName")
     @Produces("text/plain")
@@ -34,52 +34,27 @@ public class CustomerSessionBean {
     }
     
     @GET
+    @Path("/unnko/{id}")
+    @Produces("application/json")
+    public Customer changeUnnko(@PathParam("id") Integer id) {
+        Customer target = cm.getCustomersById(id).get(0);
+        target.setName("うんこ");
+        cm.updateCustomers(target);
+        return target;
+    }
+    
+    @GET
     @Path("/getCustomerXml/{id}")
     @Produces("application/xml")
     public Customer getCustomerXml(@PathParam("id") Integer id) {
-        return (Customer)
-                em.createNamedQuery("Customer.findByCustomerId")
-                        .setParameter("customerId", id)
-                        .getSingleResult();
+        return (Customer) cm.getCustomersById(id).get(0);
     }
     
     @GET
     @Path("/getCustomerJson/{id}")
     @Produces("application/json")
     public Customer getCustomerJson(@PathParam("id") Integer id) {
-        return (Customer)
-                em.createNamedQuery("Customer.findByCustomerId")
-                        .setParameter("customerId", id)
-                        .getSingleResult();
-    }
-    
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
-    @PersistenceContext(unitName = "sample")
-    EntityManager em;
-    
-    //@Resource
-    //UserTransaction utx;
-    
-    public List<Customer> getCustomers() {
-        return (List<Customer>) em.createNamedQuery("Customer.findAll").getResultList();
-    }
-    
-    public List<Customer> getCustomersById(int id) {
-        Query q = em.createNamedQuery("Customer.findByCustomerId");
-        q.setParameter("customerId", id);
-        return (List<Customer>)q.getResultList();
-    }
-    
-    public List<Customer> getCustomersByIdAndName(int id, String name){
-        Query q = em.createNamedQuery("Customer.findByIdAndName")
-                .setParameter("customerId", id)
-                .setParameter("name", name);
-        return (List<Customer>)q.getResultList();
-    }
-    
-    public void updateCustomers(Customer customer) {
-        em.merge(customer);
+        return (Customer) cm.getCustomersById(id).get(0);
     }
     
     @AroundInvoke
